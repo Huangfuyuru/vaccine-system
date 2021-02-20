@@ -23,7 +23,7 @@
                 >
                     <el-select v-model="form.type" placeholder="请选择">
                         <el-option key="one" label="一类疫苗" :value="1"></el-option>
-                        <el-option key="two" label="二类疫苗" :value="0"></el-option>
+                        <el-option key="two" label="二类疫苗" :value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item 
@@ -45,7 +45,7 @@
                                 v-for="item in time"
                                 :label="item.name"
                                 :key="item.value"
-                                :value="item.value"
+                                :value="item.id"
                             ></el-option>
                         </el-select>
                     </el-form-item>
@@ -77,7 +77,6 @@
 </template>
 
 <script>
-import {time} from '../../common/time'
 import {clone} from 'lodash'
 import { postVaccineData,getTimes } from '../../../api/index';
 export default {
@@ -101,13 +100,18 @@ export default {
     data() {
         return {
             number:0,
-            form:clone(this.formData)
+            form:clone(this.formData),
+            time:[]
         };
     },
     methods: {
         onSubmit() {
             if(!this.disabled){
-                postVaccineData(this.query).then(res => {
+                let vtimes = this.form.times.map(item=>item.value);
+                this.form.times = vtimes;
+                console.log(this.form.times);
+                debugger
+                postVaccineData(this.form).then(res => {
                     this.$message.success('提交成功！');
                 });
             }
@@ -117,16 +121,14 @@ export default {
                 this.form.times = [];
                 for(let i=0;i<val;i++){
                     this.form.times.push({
-                        key:0,
                         value:''
                     })
                 }
             }
         },
-        getTimes(){
-            getTimes().then(res=>{
-                return res
-            })
+        async getSyncTimes(){
+            let {data} = await getTimes();
+            this.time = data;
         }
     },
     created(){
@@ -138,8 +140,8 @@ export default {
           ],
           batchNumber:{ required: true, message: '请输入批号', trigger: 'blur' },
           type:{ required: true, message: '请选择类型', trigger: 'blur' },
-        },
-        this.time = this.getTimes();
+        };
+        this.getSyncTimes();
     },
 };
 </script>

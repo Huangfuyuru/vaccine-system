@@ -96,8 +96,8 @@ export const postUserData = data => {
     });
 };
 
-export const getTimes = query => {
-    return request({
+export const getTimes = async query => {
+    return await request({
         url: URL.GET_TIMES_DATA,
         method: 'get',
         query
