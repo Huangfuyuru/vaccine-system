@@ -1,0 +1,22 @@
+{
+    "list": [
+        {
+            "name": "李医生",
+            "account": "123",
+            "verificationCode": "123",
+            "password": "123345",
+            "repetition": "123345",
+            "role": 0,
+            "tel": "1232"
+        },
+        {
+            "name": "李四",
+            "account": "123",
+            "verificationCode": "123",
+            "password": "123345",
+            "repetition": "123345",
+            "role": 1,
+            "tel": "1232"
+        }
+    ]
+}

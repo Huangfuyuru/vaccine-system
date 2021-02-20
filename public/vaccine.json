@@ -1,0 +1,38 @@
+{
+    "list": [
+        {
+            "id": 1,
+            "name": "新冠疫苗",
+            "shortname": "新冠",
+            "type": "two",
+            "number": "20",
+            "intro": "接种事项",
+            "price": "80",
+            "validity": "2024-02-09",
+            "batchNumber": "第三批"
+        },
+        {
+            "id": 1,
+            "name": "新冠疫苗",
+            "shortname": "新冠",
+            "type": "two",
+            "number": "20",
+            "intro": "接种事项",
+            "price": "80",
+            "validity": "2024-02-09",
+            "batchNumber": "第三批"
+        },
+        {
+            "id": 1,
+            "name": "新冠疫苗",
+            "shortname": "新冠",
+            "type": "two",
+            "number": "20",
+            "intro": "接种事项",
+            "price": "80",
+            "validity": "2024-02-09",
+            "batchNumber": "第三批"
+        }
+    ],
+    "pageTotal": 3
+}
