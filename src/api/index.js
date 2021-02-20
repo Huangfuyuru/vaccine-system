@@ -95,3 +95,11 @@ export const postUserData = data => {
         data
     });
 };
+
+export const getTimes = query => {
+    return request({
+        url: URL.GET_TIMES_DATA,
+        method: 'get',
+        query
+    });
+};

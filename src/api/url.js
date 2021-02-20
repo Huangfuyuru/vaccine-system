@@ -7,6 +7,7 @@ export default {
     POST_VACCINE_DATA: '/vaccines/create',
     POST_DELETE_VACCINE_DATA: '/vaccines/delete',//删除
     GET_VACCINE_COUNT: '/vaccines/count',//每种疫苗接种的数量
+    POST_MODIFICATION_VACCINE_: '/vaccines/modify',//修改疫苗
 
     GET_INOCULATION_DATA: '/inoculations/detail',
     POST_INOCULATION_DATA: '/inoculations/create',
@@ -16,4 +17,6 @@ export default {
     GET_USER_COUNT: '/users/count',
 
     GET_COUNT: '/all/count',//接种人数，接种疫苗数，疫苗种类数
+
+    GET_TIMES_DATA: '/times/detail'
 };

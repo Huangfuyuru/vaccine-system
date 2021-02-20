@@ -44,8 +44,8 @@
                             <el-option
                                 v-for="item in time"
                                 :label="item.name"
-                                :key="item.key"
-                                :value="item.key"
+                                :key="item.value"
+                                :value="item.value"
                             ></el-option>
                         </el-select>
                     </el-form-item>
@@ -79,7 +79,7 @@
 <script>
 import {time} from '../../common/time'
 import {clone} from 'lodash'
-import { postVaccineData } from '../../../api/index';
+import { postVaccineData,getTimes } from '../../../api/index';
 export default {
     name: 'form',
     props:{
@@ -122,6 +122,11 @@ export default {
                     })
                 }
             }
+        },
+        getTimes(){
+            getTimes().then(res=>{
+                return res
+            })
         }
     },
     created(){
@@ -134,7 +139,7 @@ export default {
           batchNumber:{ required: true, message: '请输入批号', trigger: 'blur' },
           type:{ required: true, message: '请选择类型', trigger: 'blur' },
         },
-        this.time = time;
+        this.time = this.getTimes();
     },
 };
 </script>
