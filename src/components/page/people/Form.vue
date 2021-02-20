@@ -93,6 +93,7 @@
 
 <script>
 import { clone } from 'lodash'
+import { postPeopleData } from '../../../api/index';
 export default {
     name: 'form',
     props:{
@@ -117,7 +118,9 @@ export default {
     },
     methods: {
         onSubmit() {
-            this.$message.success('提交成功！');
+            postPeopleData(this.query).then(res => {
+                this.$message.success('提交成功！');
+            });
         }
     },
     created(){

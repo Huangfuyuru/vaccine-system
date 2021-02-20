@@ -79,6 +79,7 @@
 <script>
 import {time} from '../../common/time'
 import {clone} from 'lodash'
+import { postVaccineData } from '../../../api/index';
 export default {
     name: 'form',
     props:{
@@ -106,8 +107,9 @@ export default {
     methods: {
         onSubmit() {
             if(!this.disabled){
-                console.log(this.form)
-                this.$message.success('提交成功！');
+                postVaccineData(this.query).then(res => {
+                    this.$message.success('提交成功！');
+                });
             }
         },
         addCount(val){

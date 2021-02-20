@@ -9,12 +9,6 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button
-                    type="primary"
-                    icon="el-icon-delete"
-                    class="handle-del mr10"
-                    @click="delAllSelection"
-                >批量删除</el-button>
                 <el-input v-model="query.name" placeholder="疫苗名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
@@ -24,9 +18,7 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="serialNumber" label="编号" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
                 <el-table-column prop="type" label="类型"></el-table-column>
@@ -35,17 +27,17 @@
                 <el-table-column prop="batchNumber" label="批次"></el-table-column>
                 <el-table-column prop="price" label="价格"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
-                    <template slot-scope="scope">
+                    <template slot-scope="{row}">
                         <el-button
                             type="text"
                             icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
+                            @click="handleEdit(row)"
                         >详情</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-delete"
                             class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
+                            @click="handleDelete(row)"
                         >下架</el-button>
                     </template>
                 </el-table-column>
@@ -81,7 +73,7 @@
 </template>
 
 <script>
-import { getVaccineData } from '../../../api/index';
+import { getVaccineData,postDeleteVaccine } from '../../../api/index';
 import CommonForm from './Form'
 export default {
     name: 'basetable',
@@ -97,8 +89,6 @@ export default {
                 pageSize: 10
             },
             tableData: [],
-            multipleSelection: [],
-            delList: [],
             editVisible: false,
             pageTotal: 0,
             form: {},
@@ -126,44 +116,28 @@ export default {
             this.getData();
         },
         // 删除操作
-        handleDelete(index, row) {
+        handleDelete(row) {
             // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
                 .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
+                    postDeleteVaccine(row.id).then(res=>{
+                        this.$message.success('删除成功');
+                    })
                 })
                 .catch(() => {});
         },
-        // 多选操作
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-        },
-        delAllSelection() {
-            const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
-            }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
-        },
+        
         // 编辑操作
-        handleEdit(index, row) {
-            this.idx = index;
+        handleEdit(row) {
             this.formData = row;
-            console.log(row)
             this.editVisible = true;
         },
         // 保存编辑
         saveEdit() {
             this.$refs.form.onSubmit();
             this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
         handlePageChange(val) {

@@ -9,12 +9,6 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button
-                    type="primary"
-                    icon="el-icon-delete"
-                    class="handle-del mr10"
-                    @click="delAllSelection"
-                >批量删除</el-button>
                 <el-input v-model="query.name" placeholder="接种人姓名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
@@ -24,9 +18,7 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="用户名"></el-table-column>
                 <el-table-column prop="birthday" label="出生日期"></el-table-column>
@@ -40,17 +32,17 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
-                    <template slot-scope="scope">
+                    <template slot-scope="{row}">
                         <el-button
                             type="text"
                             icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
+                            @click="handleEdit(row)"
                         >编辑</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-delete"
                             class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
+                            @click="handleDelete(row)"
                         >删除</el-button>
                     </template>
                 </el-table-column>
@@ -82,7 +74,7 @@
 </template>
 
 <script>
-import { getChildData } from '../../../api/index';
+import { getPeopleData,postDeletePeople } from '../../../api/index';
 import CommonForm from './Form'
 export default {
     name: 'basetable',
@@ -94,11 +86,9 @@ export default {
             query: {
                 name: '',
                 pageIndex: 1,
-                pageSize: 10
+                pageSize: 20
             },
             tableData: [],
-            multipleSelection: [],
-            delList: [],
             editVisible: false,
             pageTotal: 0,
             form: {},
@@ -113,7 +103,7 @@ export default {
     methods: {
         // 获取 easy-mock 的模拟数据
         getData() {
-            getChildData(this.query).then(res => {
+            getPeopleData(this.query).then(res => {
                 this.tableData = res.list;
                 this.pageTotal = res.pageTotal || 50;
             });
@@ -124,44 +114,28 @@ export default {
             this.getData();
         },
         // 删除操作
-        handleDelete(index, row) {
+        handleDelete(row) {
             // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
                 .then(() => {
+                    postDeletePeople({row:row.id})
                     this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
                 })
                 .catch(() => {});
         },
-        // 多选操作
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-        },
-        delAllSelection() {
-            const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
-            }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
-        },
         // 编辑操作
-        handleEdit(index, row) {
-            this.idx = index;
+        handleEdit(row) {
             this.formData = row;
-            console.log(row)
             this.editVisible = true;
         },
         // 保存编辑
         saveEdit() {
             this.$refs.form.onSubmit();
             this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
+            this.$message.success(`修改成功`);
+            this.getData();
         },
         // 分页导航
         handlePageChange(val) {
