@@ -94,7 +94,7 @@ export default {
             type:Object,
             default:()=>({
                 name:'',//疫苗名称
-                fixedvaccines:'',//对应固定疫苗id 
+                fixedvaccinesid:'',//对应固定疫苗id 
                 company:'',//生产企业
                 deadline:'',//有效期
                 count:'',//数量
@@ -118,12 +118,11 @@ export default {
     },
     methods: {
         onSubmit() {
-            console.log(this.form)
-            // if(!this.disabled){
-            //     postVaccineData(this.form).then(res => {
-            //         this.$message.success('提交成功！');
-            //     });
-            // }
+             if(!this.disabled){
+                 postVaccineData(this.form).then(res => {
+                     this.$message.success('提交成功！');
+                 });
+             }
         },
         addCount(val){
             if(val < 6){
@@ -136,17 +135,9 @@ export default {
             }
         },
         async getSyncFixedVacciens(){
-            // let { data } = await getFixedVaccines();
-            // this.fixedvacciens = data;
-            this.fixedvacciens = [
-                {
-                    id:'1',
-                    name:'卡介苗',
-                    count:3,
-                    type:1,
-                    setdate:'2020-20'
-                }
-            ]
+             let { data } = await getFixedVaccines();
+             this.fixedvacciens = data;
+            
         },
         chooseVaccines(val){
             const {id,name} = val;

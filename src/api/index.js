@@ -98,7 +98,7 @@ export const postUserData = data => {
 
 export const getFixedVaccines = async query => {
     return await request({
-        url: URL.GET_INOCULATION_DATA,
+        url: URL.GET_FIXEDVACCINE_DATA,
         method: 'get',
         query
     });
