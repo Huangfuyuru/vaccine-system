@@ -1,13 +1,13 @@
 export default {
-    GET_PEOPLE_DATA: '/people/detail',
-    POST_PEOPLE_DATA: '/people/create',//新建
-    POST_DELETE_PEOPLE_DATA: '/people/delete',//删除
+    GET_CHILDS_DATA: '/childs/detail',
+    POST_CHILDS_DATA: '/childs/create',//新建
+    POST_DELETE_CHILDS_DATA: '/childs/delete',//删除
 
     GET_VACCINE_DATA: '/vaccines/detail',
     POST_VACCINE_DATA: '/vaccines/create',
     POST_DELETE_VACCINE_DATA: '/vaccines/delete',//删除
-    GET_VACCINE_COUNT: '/vaccines/count',//每种疫苗接种的数量
     POST_MODIFICATION_VACCINE_: '/vaccines/modify',//修改疫苗
+    GET_FIXEDVACCINE_DATA: '/vaccines/fixedvaccines',//得到固定疫苗信息渲染
 
     GET_INOCULATION_DATA: '/inoculations/detail',
     POST_INOCULATION_DATA: '/inoculations/create',

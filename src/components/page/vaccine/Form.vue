@@ -8,48 +8,44 @@
                 label-width="80px"
             >
                 <el-form-item 
-                    label="名称" 
+                    label="疫苗名称"
                     prop="name"
                     clearable
+                    filterable
                 >
-                    <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                
-                
-                <el-form-item 
-                    label="疫苗类型"
-                    prop="type"
-                    clearable
-                >
-                    <el-select v-model="form.type" placeholder="请选择">
-                        <el-option key="one" label="一类疫苗" :value="1"></el-option>
-                        <el-option key="two" label="二类疫苗" :value="2"></el-option>
+                    <el-select 
+                        v-model="form.name"
+                        placeholder="请选择"
+                        @change="chooseVaccines"
+                    >
+                        <el-option
+                            v-for="(item,index) in fixedvacciens"
+                            :label="item.name"
+                            :value="item"
+                            :key="index"
+                        ></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item 
-                    label="剂数" 
+                    label="数量"
                     prop="count"
                     clearable
                 >
-                    <el-input type="number" v-model="form.count" @change="addCount"></el-input>
+                    <el-input type="number" v-model="form.count"></el-input>
                 </el-form-item>
-                <div
-                    v-for="(item,index) in form.times"
+                <el-form-item 
+                    label="有效期"
+                    prop="deadline"
+                    clearable
                 >
-                    <el-form-item 
-                        :label="`第${index+1}次`"
-                        clearable
-                    >
-                        <el-select v-model="item.value" placeholder="请选择">
-                            <el-option
-                                v-for="item in time"
-                                :label="item.name"
-                                :key="item.value"
-                                :value="item.id"
-                            ></el-option>
-                        </el-select>
-                    </el-form-item>
-                </div>
+                    <el-date-picker
+                        type="date"
+                        placeholder="选择日期"
+                        v-model="form.deadline"
+                        value-format="yyyy-MM-dd"
+                        style="width: 100%;"
+                    ></el-date-picker>
+                </el-form-item>
                 <el-form-item 
                     label="批号"
                     prop="batchNumber"
@@ -57,13 +53,25 @@
                 >
                     <el-input v-model="form.batchNumber"></el-input>
                 </el-form-item>
-                <el-form-item label="简介">
-                    <el-input 
-                        type="textarea" 
-                        rows="5" 
-                        v-model="form.intro"
-                        placeholder="如接种日期"
-                    ></el-input>
+                <el-form-item 
+                    label="厂家"
+                    prop="company"
+                    clearable
+                >
+                    <el-input v-model="form.company"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="入库时间"
+                    prop="setdate"
+                    clearable
+                >
+                    <el-date-picker
+                        type="date"
+                        placeholder="选择日期"
+                        v-model="form.setdate"
+                        value-format="yyyy-MM-dd"
+                        style="width: 100%;"
+                    ></el-date-picker>
                 </el-form-item>
                 <el-form-item 
                     v-if="!formData.name.length"
@@ -78,7 +86,7 @@
 
 <script>
 import {clone} from 'lodash'
-import { postVaccineData,getTimes } from '../../../api/index';
+import { postVaccineData,getFixedVaccines } from '../../../api/index';
 export default {
     name: 'form',
     props:{
@@ -86,10 +94,14 @@ export default {
             type:Object,
             default:()=>({
                 name:'',//疫苗名称
-                type:'',//类型
-                count:'',//接种次数
-                times:[],
+                fixedvaccines:'',//对应固定疫苗id 
+                company:'',//生产企业
+                deadline:'',//有效期
+                count:'',//数量
+                setdate:'',//入库时间，
                 batchNumber:'',//批号
+                isExist:true,
+                outdate:''
             })
         },
         disabled:{
@@ -101,20 +113,17 @@ export default {
         return {
             number:0,
             form:clone(this.formData),
-            time:[]
+            fixedvacciens:[]
         };
     },
     methods: {
         onSubmit() {
-            if(!this.disabled){
-                let vtimes = this.form.times.map(item=>item.value);
-                this.form.times = vtimes;
-                console.log(this.form.times);
-                debugger
-                postVaccineData(this.form).then(res => {
-                    this.$message.success('提交成功！');
-                });
-            }
+            console.log(this.form)
+            // if(!this.disabled){
+            //     postVaccineData(this.form).then(res => {
+            //         this.$message.success('提交成功！');
+            //     });
+            // }
         },
         addCount(val){
             if(val < 6){
@@ -126,22 +135,36 @@ export default {
                 }
             }
         },
-        async getSyncTimes(){
-            let {data} = await getTimes();
-            this.time = data;
+        async getSyncFixedVacciens(){
+            // let { data } = await getFixedVaccines();
+            // this.fixedvacciens = data;
+            this.fixedvacciens = [
+                {
+                    id:'1',
+                    name:'卡介苗',
+                    count:3,
+                    type:1,
+                    setdate:'2020-20'
+                }
+            ]
+        },
+        chooseVaccines(val){
+            const {id,name} = val;
+            this.form.name = name;
+            this.form.fixedvaccinesid = id;
         }
     },
     created(){
         this.rules = {
           name: { required: true, message: '请输入姓名', trigger: 'blur' },
-          count:[
-              { required: true, message: '请输入1-5', trigger: 'blur' },
-              { required: true, message: '请输入1-5', trigger: 'change' },
-          ],
+          count:{ required: true, message: '请输入数量', trigger: 'blur' },
           batchNumber:{ required: true, message: '请输入批号', trigger: 'blur' },
-          type:{ required: true, message: '请选择类型', trigger: 'blur' },
+          company:{ required: true, message: '请输入公司', trigger: 'blur' },
+          deadline:{ required: true, message: '请选择生产日期', trigger: 'blur' },
+          setdate:{ required: true, message: '请选择生产日期', trigger: 'blur' },
+          company:{ required: true, message: '请输入生产厂家', trigger: 'blur' },
         };
-        this.getSyncTimes();
+        this.getSyncFixedVacciens();
     },
 };
 </script>
