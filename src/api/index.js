@@ -1,10 +1,34 @@
 import request from '../utils/request';
 import URL from './url'
+export const postLoginUser = data => {
+    return request({
+        url: URL.POST_LOGIN,
+        method: 'post',
+        data
+    });
+};
+
 export const getPeopleData = query => {
     return request({
         url: URL.GET_PEOPLE_DATA,
         method: 'get',
         query
+    });
+};
+
+export const getCount = query => {
+    return request({
+        url: URL.GET_COUNT,
+        method: 'get',
+        query
+    });
+};
+
+export const postMPeopleData = data => {
+    return request({
+        url: URL.POST_MODIFICATION_CHILD,
+        method: 'post',
+        data
     });
 };
 

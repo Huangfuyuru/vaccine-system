@@ -1,12 +1,15 @@
 export default {
+    POST_LOGIN: '/login/users',//登录
+
     GET_CHILDS_DATA: '/childs/detail',
     POST_CHILDS_DATA: '/childs/create',//新建
     POST_DELETE_CHILDS_DATA: '/childs/delete',//删除
+    POST_MODIFICATION_CHILD: '/childs/modify',//修改
 
     GET_VACCINE_DATA: '/vaccines/detail',
     POST_VACCINE_DATA: '/vaccines/create',
     POST_DELETE_VACCINE_DATA: '/vaccines/delete',//删除
-    POST_MODIFICATION_VACCINE_: '/vaccines/modify',//修改疫苗
+    POST_MODIFICATION_VACCINE: '/vaccines/modify',//修改疫苗
     GET_FIXEDVACCINE_DATA: '/vaccines/fixedvaccines',//得到固定疫苗信息渲染
 
     GET_INOCULATION_DATA: '/inoculations/detail',
@@ -16,7 +19,5 @@ export default {
     POST_USER_DATA: '/users/create',
     GET_USER_COUNT: '/users/count',
 
-    GET_COUNT: '/all/count',//接种人数，接种疫苗数，疫苗种类数
-
-    GET_TIMES_DATA: '/times/detail'
+    GET_COUNT: '/vaccines/count',//接种人数，接种疫苗数，疫苗种类数
 };

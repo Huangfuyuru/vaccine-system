@@ -5,10 +5,28 @@
                 <el-card shadow="hover" class="mgb20" style="height:670px;">
                     <div class="user-info">
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
-                            <div>{{role}}</div>
+                            <div class="user-info-name">{{userData.name}}</div>
+                            <div>职位:{{userData.type?'管理员':'接种员'}}</div>
+                            <div>账号:{{userData.account}}</div>
+                            <div>所属单位:{{userData.unit}}</div>
+                            <div>联系电话:{{userData.tel}}</div>
+                            <div>账号:{{userData.account}}</div>
                         </div>
+                        
                     </div>
+                    <el-card shadow="hover" style="height:252px;">
+                    <div slot="header" class="clearfix">
+                        <span>接种详情</span>
+                    </div>
+                    甲肝疫苗
+                    <el-progress :percentage="71.3" color="#42b983"></el-progress>
+                    乙肝疫苗
+                    <el-progress :percentage="24.1" color="#f1e05a"></el-progress>
+                    卡介苗
+                    <el-progress :percentage="13.7"></el-progress>
+                    脊髓灰质炎三价混合疫苗
+                    <el-progress :percentage="5.9" color="#f56c6c"></el-progress>
+                </el-card>
                 </el-card>
             </el-col>
             <el-col :span="16">
@@ -18,7 +36,7 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
+                                    <div class="grid-num">{{count.childs}}</div>
                                     <div>接种人数</div>
                                 </div>
                             </div>
@@ -29,7 +47,7 @@
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-lx-favor grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
+                                    <div class="grid-num">{{count.vaccines}}</div>
                                     <div>接种疫苗数</div>
                                 </div>
                             </div>
@@ -40,7 +58,7 @@
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-lx-profile grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
+                                    <div class="grid-num">{{count.users}}</div>
                                     <div>接种员数</div>
                                 </div>
                             </div>
@@ -59,127 +77,32 @@
 <script>
 import Schart from 'vue-schart';
 import bus from '../common/bus';
+import {getCount} from '../../api/index'
 export default {
     name: 'dashboard',
     data() {
         return {
-            name: localStorage.getItem('ms_username'),
-            data: [
-                {
-                    name: '2018/09/04',
-                    value: 1083
-                },
-                {
-                    name: '2018/09/05',
-                    value: 941
-                },
-                {
-                    name: '2018/09/06',
-                    value: 1139
-                },
-                {
-                    name: '2018/09/07',
-                    value: 816
-                },
-                {
-                    name: '2018/09/08',
-                    value: 327
-                },
-                {
-                    name: '2018/09/09',
-                    value: 228
-                },
-                {
-                    name: '2018/09/10',
-                    value: 1065
-                }
-            ],
-            options: {
-                type: 'bar',
-                title: {
-                    text: '最近一周各品类销售图'
-                },
-                xRorate: 25,
-                labels: ['周一', '周二', '周三', '周四', '周五'],
-                datasets: [
-                    {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
-                    },
-                    {
-                        label: '百货',
-                        data: [164, 178, 190, 135, 160]
-                    },
-                    {
-                        label: '食品',
-                        data: [144, 198, 150, 235, 120]
-                    }
-                ]
+            userData:null,
+            count:{
+                childs:100,
+                vaccines:200,
+                users:300
             },
-            options2: {
-                type: 'line',
-                title: {
-                    text: '最近几个月各品类销售趋势图'
-                },
-                labels: ['6月', '7月', '8月', '9月', '10月'],
-                datasets: [
-                    {
-                        label: '家电',
-                        data: [234, 278, 270, 190, 230]
-                    },
-                    {
-                        label: '百货',
-                        data: [164, 178, 150, 135, 160]
-                    },
-                    {
-                        label: '食品',
-                        data: [74, 118, 200, 235, 90]
-                    }
-                ]
-            }
         };
     },
     components: {
         Schart
     },
-    computed: {
-        role() {
-            return this.name === 'admin' ? '超级管理员' : '普通用户';
-        }
+    created(){
+        let data = localStorage.getItem('ms_users') || {};
+        this.userData = JSON.parse(data);
+        this.getCount();
     },
-    // created() {
-    //     this.handleListener();
-    //     this.changeDate();
-    // },
-    // activated() {
-    //     this.handleListener();
-    // },
-    // deactivated() {
-    //     window.removeEventListener('resize', this.renderChart);
-    //     bus.$off('collapse', this.handleBus);
-    // },
     methods: {
-        changeDate() {
-            const now = new Date().getTime();
-            this.data.forEach((item, index) => {
-                const date = new Date(now - (6 - index) * 86400000);
-                item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-            });
+        async getCount(){
+            let {data} = await getCount();
+            this.count = data;
         }
-        // handleListener() {
-        //     bus.$on('collapse', this.handleBus);
-        //     // 调用renderChart方法对图表进行重新渲染
-        //     window.addEventListener('resize', this.renderChart);
-        // },
-        // handleBus(msg) {
-        //     setTimeout(() => {
-        //         this.renderChart();
-        //     }, 200);
-        // },
-        // renderChart() {
-        //     this.$refs.bar.renderChart();
-        //     this.$refs.line.renderChart();
-        // }
     }
 };
 </script>
@@ -265,6 +188,10 @@ export default {
 .user-info-cont div:first-child {
     font-size: 30px;
     color: #222;
+}
+
+.user-info-cont div {
+    margin: 20px 0;
 }
 
 .user-info-list {

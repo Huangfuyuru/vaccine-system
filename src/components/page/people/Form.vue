@@ -1,7 +1,8 @@
 <template>
     <div class="container">
         <div class="form-box">
-            <el-form ref="form" 
+            <el-form 
+                ref="form" 
                 :model="form" 
                 :rules="rules"
                 label-width="80px"
@@ -93,13 +94,14 @@
 
 <script>
 import { clone } from 'lodash'
-import { postPeopleData } from '../../../api/index';
+import { postPeopleData,postMPeopleData } from '../../../api/index';
 export default {
     name: 'form',
     props:{
         formData:{
             type:Object,
             default:()=>({
+                id:'',
                 name: '',
                 birthday:'',
                 identityCard:'',
@@ -118,9 +120,20 @@ export default {
     },
     methods: {
         onSubmit() {
-            postPeopleData(this.query).then(res => {
-                this.$message.success('提交成功！');
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    this.postData();
+                } else {
+                    return false;
+                }
             });
+        },
+        async postData(){
+            if(this.formData.id !== ''){
+                await postMPeopleData(this.form)
+            }else{
+                await postPeopleData(this.form)
+            }
         }
     },
     created(){

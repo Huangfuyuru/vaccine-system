@@ -141,7 +141,6 @@ export default {
                         }
                     ]
                 }
-                
             ]
         };
     },
@@ -157,6 +156,10 @@ export default {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
+        const type = localStorage.getItem('ms_type');
+        if(type !== 1){
+            this.items.pop();
+        }
     }
 };
 </script>

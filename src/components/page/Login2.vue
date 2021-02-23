@@ -1,17 +1,17 @@
 <template>
     <div class="login-wrap">
         <div class="ms-login">
-            <div class="ms-title">疫苗接种管理系统</div>
+            <div class="ms-title">后台管理系统</div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
-                <el-form-item prop="account">
-                    <el-input v-model="param.account" placeholder="账号">
+                <el-form-item prop="username">
+                    <el-input v-model="param.username" placeholder="username">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input
                         type="password"
-                        placeholder="密码"
+                        placeholder="password"
                         v-model="param.password"
                         @keyup.enter.native="submitForm()"
                     >
@@ -21,48 +21,51 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
+                <p class="login-tips">Tips : 用户名和密码随便填。</p>
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
-import { postLoginUser } from '../../api/index';
 export default {
     data: function() {
         return {
             param: {
-                account:'',
-                username: '',
-                pass: '',
+                username: 'admin',
+                password: '123123',
             },
             rules: {
-                account: [{ required: true, message: '请输入账户', trigger: 'blur' }],
-                pass: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
-            resData:{}
         };
     },
     methods: {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    postLoginUser(this.param)
+                    let data = {
+                        name:'张三',
+                        type:1,
+                        id:'122',
+                        account:'864134710@qq.com',
+                        tel:'15930300511',
+                        unit:'第一医院'
+                    };
+                    localStorage.setItem('ms_username', this.param.username);
+                    localStorage.setItem('ms_type', 2);
+                    localStorage.setItem('ms_users',JSON.stringify(data));
+                    this.$message.success('登录成功');
+
+                    this.$router.push('/');
                 } else {
                     this.$message.error('请输入账号和密码');
+                    console.log('error submit!!');
                     return false;
                 }
             });
         },
-        async postAsyncLoginUser(param){
-            let { code,data } = await postLoginUser(param);
-            this.$message.success(data.msg);
-            if(code === 0){
-                localStorage.setItem('ms_type', data.type);
-                localStorage.setItem('ms_users',JSON.stringify(data));
-                this.$router.push('/');
-            }
-        }
     },
 };
 </script>
@@ -72,13 +75,14 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+    background-size: 100%;
 }
 .ms-title {
     width: 100%;
     line-height: 50px;
     text-align: center;
     font-size: 20px;
-    color: rgb(40, 51, 200);
+    color: #fff;
     border-bottom: 1px solid #ddd;
 }
 .ms-login {
