@@ -8,11 +8,11 @@
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
-                <el-form-item prop="password">
+                <el-form-item prop="pass">
                     <el-input
                         type="password"
                         placeholder="密码"
-                        v-model="param.password"
+                        v-model="param.pass"
                         @keyup.enter.native="submitForm()"
                     >
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
@@ -33,7 +33,6 @@ export default {
         return {
             param: {
                 account:'',
-                username: '',
                 pass: '',
             },
             rules: {
@@ -47,7 +46,7 @@ export default {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    postLoginUser(this.param)
+                    this.postAsyncLoginUser(this.param)
                 } else {
                     this.$message.error('请输入账号和密码');
                     return false;
@@ -56,10 +55,10 @@ export default {
         },
         async postAsyncLoginUser(param){
             let { code,data } = await postLoginUser(param);
-            this.$message.success(data.msg);
             if(code === 0){
-                localStorage.setItem('ms_type', data.type);
-                localStorage.setItem('ms_users',JSON.stringify(data));
+                let ndata = JSON.stringify(data);
+                localStorage.setItem('ms_type',ndata.type);
+                localStorage.setItem('ms_users',ndata);
                 this.$router.push('/');
             }
         }

@@ -8,11 +8,11 @@ export const postLoginUser = data => {
     });
 };
 
-export const getPeopleData = query => {
+export const getPeopleData = data => {
     return request({
-        url: URL.GET_PEOPLE_DATA,
-        method: 'get',
-        query
+        url: URL.GET_CHILDS_DATA,
+        method: 'post',
+        data
     });
 };
 
@@ -34,7 +34,7 @@ export const postMPeopleData = data => {
 
 export const postPeopleData = data => {
     return request({
-        url: URL.POST_PEOPLE_DATA,
+        url: URL.POST_CHILDS_DATA,
         method: 'post',
         data
     });
@@ -42,17 +42,17 @@ export const postPeopleData = data => {
 
 export const postDeletePeople = data => {
     return request({
-        url: URL.POST_PEOPLE_DATA,
+        url: URL.POST_DELETE_CHILDS_DATA,
         method: 'post',
         data
     });
 };
 
-export const getVaccineData = query => {
+export const getVaccineData = data => {
     return request({
         url: URL.GET_VACCINE_DATA,
-        method: 'get',
-        query
+        method: 'post',
+        data
     });
 };
 
@@ -67,6 +67,14 @@ export const getVaccineCount = query => {
 export const postVaccineData = data => {
     return request({
         url: URL.POST_VACCINE_DATA,
+        method: 'post',
+        data
+    });
+};
+
+export const postMVaccineData = data => {
+    return request({
+        url: URL.POST_MODIFICATION_VACCINE,
         method: 'post',
         data
     });

@@ -48,10 +48,10 @@
                 </el-form-item>
                 <el-form-item 
                     label="批号"
-                    prop="batchNumber"
+                    prop="batchnumber"
                     clearable
                 >
-                    <el-input v-model="form.batchNumber"></el-input>
+                    <el-input v-model="form.batchnumber"></el-input>
                 </el-form-item>
                 <el-form-item 
                     label="厂家"
@@ -86,21 +86,22 @@
 
 <script>
 import {clone} from 'lodash'
-import { postVaccineData,getFixedVaccines } from '../../../api/index';
+import { postVaccineData,postMVaccineData,getFixedVaccines } from '../../../api/index';
 export default {
     name: 'form',
     props:{
         formData:{
             type:Object,
             default:()=>({
+                id:'',
                 name:'',//疫苗名称
                 fixedvaccinesid:'',//对应固定疫苗id 
                 company:'',//生产企业
                 deadline:'',//有效期
                 count:'',//数量
                 setdate:'',//入库时间，
-                batchNumber:'',//批号
-                isExist:true,
+                batchnumber:'',//批号
+                isexist:true,
                 outdate:''
             })
         },
@@ -118,38 +119,33 @@ export default {
     },
     methods: {
         onSubmit() {
-             if(!this.disabled){
-                 postVaccineData(this.form).then(res => {
-                     this.$message.success('提交成功！');
-                 });
-             }
-        },
-        addCount(val){
-            if(val < 6){
-                this.form.times = [];
-                for(let i=0;i<val;i++){
-                    this.form.times.push({
-                        value:''
-                    })
+            this.$refs.form.validate(valid => {
+                if (valid) {
+                    this.postData();
+                } else {
+                    return false;
                 }
+            });
+        },
+        async postData(){
+            if(this.formData.id !== ''){
+                await postMVaccineData(this.form);
+                this.$ref.form.resetFields();
+            }else{
+                await postVaccineData(this.form);
+                 this.$router.push('/vaccine/detail');
             }
         },
         async getSyncFixedVacciens(){
-             let { data } = await getFixedVaccines();
-             this.fixedvacciens = data;
-            
-        },
-        chooseVaccines(val){
-            const {id,name} = val;
-            this.form.name = name;
-            this.form.fixedvaccinesid = id;
+            let {data}  = await getFixedVaccines();
+            this.fixedvacciens = data;
         }
     },
     created(){
         this.rules = {
           name: { required: true, message: '请输入姓名', trigger: 'blur' },
           count:{ required: true, message: '请输入数量', trigger: 'blur' },
-          batchNumber:{ required: true, message: '请输入批号', trigger: 'blur' },
+          batchnumber:{ required: true, message: '请输入批号', trigger: 'blur' },
           company:{ required: true, message: '请输入公司', trigger: 'blur' },
           deadline:{ required: true, message: '请选择生产日期', trigger: 'blur' },
           setdate:{ required: true, message: '请选择生产日期', trigger: 'blur' },

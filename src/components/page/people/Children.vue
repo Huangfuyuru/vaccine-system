@@ -21,9 +21,13 @@
             >
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column prop="birthday" label="出生日期"></el-table-column>
+                <el-table-column prop="birthday" label="出生日期">
+                    <template slot-scope="{row}">
+                        {{row.birthday.split('T')[0]}}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="address" label="家庭地址"></el-table-column>
-                <el-table-column prop="familyName" label="家长姓名"></el-table-column>
+                <el-table-column prop="familyname" label="家长姓名"></el-table-column>
                 <el-table-column prop="tel" label="联系电话"></el-table-column>
 
                 <el-table-column label="接种详情" align="center">
@@ -51,16 +55,16 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next"
-                    :current-page="query.pageIndex"
-                    :page-size="query.pageSize"
-                    :total="pageTotal"
+                    :current-page="query.pageindex"
+                    :page-size="query.pagesize"
+                    :total="pagetotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="40%">
+        <el-dialog title="编辑" :visible.sync="editVisible" width="50%">
             <common-form
                 ref="form"
                 :form-data="formData"
@@ -85,12 +89,12 @@ export default {
         return {
             query: {
                 name: '',
-                pageIndex: 1,
-                pageSize: 20
+                pageindex: 1,
+                pagesize: 5
             },
             tableData: [],
             editVisible: false,
-            pageTotal: 0,
+            pagetotal: 0,
             form: {},
             formData:{},
             idx: -1,
@@ -102,15 +106,24 @@ export default {
     },
     methods: {
         // 获取 easy-mock 的模拟数据
-        getData() {
-            getPeopleData(this.query).then(res => {
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
-            });
+        async getData() {
+            let {data,pagetotal} = await getPeopleData(this.query);
+            this.tableData = data;
+            this.pagetotal = Number(pagetotal);
+        },
+        async deleteChildData(id){
+            let data = await postDeletePeople(id);
+            console.log(data.code)
+            if(data.code === 0){
+                this.getData();
+                this.$message.success(`删除成功 `);
+            }else{
+                this.$message.error(`删除失败 `);
+            }
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
+            this.$set(this.query, 'pageindex', 1);
             this.getData();
         },
         // 删除操作
@@ -120,8 +133,7 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    postDeletePeople({row:row.id})
-                    this.$message.success('删除成功');
+                    this.deleteChildData({id:row.id})
                 })
                 .catch(() => {});
         },
@@ -139,7 +151,7 @@ export default {
         },
         // 分页导航
         handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
+            this.$set(this.query, 'pageindex', val);
             this.getData();
         },
         handleDetail(row){

@@ -157,7 +157,7 @@ export default {
             bus.$emit('collapse-content', msg);
         });
         const type = localStorage.getItem('ms_type');
-        if(type !== 1){
+        if(type !== 0){
             this.items.pop();
         }
     }

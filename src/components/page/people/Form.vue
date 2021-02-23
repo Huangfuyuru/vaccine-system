@@ -22,18 +22,18 @@
                             clearable
                         >
                             <el-select v-model="form.gender" placeholder="请选择">
-                                <el-option key="woman" label="女" :value="1"></el-option>
-                                <el-option key="man" label="男" :value="0"></el-option>
+                                <el-option key="woman" label="女" value="1"></el-option>
+                                <el-option key="man" label="男" value="0"></el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-form-item 
                     label="身份证号"
-                    prop="identityCard"
+                    prop="identitycard"
                     clearable
                 >
-                    <el-input v-model="form.identityCard"></el-input>
+                    <el-input v-model="form.identitycard"></el-input>
                 </el-form-item>
                 <el-form-item 
                     label="出生日期"
@@ -56,11 +56,11 @@
                     <el-input v-model="form.address"></el-input>
                 </el-form-item>
                 <el-form-item 
-                    prop="familyName"
+                    prop="familyname"
                     label="家长姓名"
                     clearable
                 >
-                    <el-input v-model="form.familyName"></el-input>
+                    <el-input v-model="form.familyname"></el-input>
                 </el-form-item>
                 <el-form-item 
                     label="联系电话"
@@ -104,10 +104,10 @@ export default {
                 id:'',
                 name: '',
                 birthday:'',
-                identityCard:'',
+                identitycard:'',
                 address:'',
                 gender:'',
-                familyName:'',
+                familyname:'',
                 tel:'',
                 comment:'',//备注，如过敏史
             })
@@ -130,9 +130,11 @@ export default {
         },
         async postData(){
             if(this.formData.id !== ''){
-                await postMPeopleData(this.form)
+                await postMPeopleData(this.form);
+                this.$ref.form.resetFields();
             }else{
-                await postPeopleData(this.form)
+                await postPeopleData(this.form);
+                 this.$router.push('/people/children');
             }
         }
     },
@@ -140,11 +142,11 @@ export default {
         this.rules = {
           name: { required: true, message: '请输入姓名', trigger: 'blur' },
           birthday: { required: true, message: '请输入出生日期', trigger: 'blur' },
-          identityCard: { required: true, message: '请输入身份证号', trigger: 'blur' },
+          identitycard: { required: true, message: '请输入身份证号', trigger: 'blur' },
           address: { required: true, message: '请输入家庭住址', trigger: 'blur' },
           gender: { required: true, message: '请输入性别', trigger: 'blur' },
           tel: { required: true, message: '请输入联系电话', trigger: 'blur' },
-          familyName: { required: true, message: '请输入家长姓名', trigger: 'blur' },
+          familyname: { required: true, message: '请输入家长姓名', trigger: 'blur' },
         }
     },
 };

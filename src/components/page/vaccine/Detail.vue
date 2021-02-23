@@ -19,20 +19,24 @@
                 ref="multipleTable"
                 header-cell-class-name="table-header"
             >
-                <el-table-column prop="serialNumber" label="编号" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
-                <el-table-column prop="type" label="类型"></el-table-column>
-                <el-table-column prop="number" label="数量"></el-table-column>
-                <el-table-column prop="validity" label="有效期"></el-table-column>
-                <el-table-column prop="batchNumber" label="批次"></el-table-column>
-                <el-table-column prop="price" label="价格"></el-table-column>
+                <el-table-column prop="count" label="数量"></el-table-column>
+                <el-table-column prop="deadline" label="有效期"></el-table-column>
+                <el-table-column prop="batchnumber" label="批次"></el-table-column>
+                <el-table-column prop="company" label="生产厂家"></el-table-column>
+                <el-table-column prop="setdate" label="入库时间">
+                    <template slot-scope="{row}">
+                        {{row.setdate.split('T')[0]}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="outdate" label="出库时间">
+                    <template slot-scope="{row}">
+                        {{row.outdate ? row.outdate.split('T')[0] : '---'}}
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="{row}">
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(row)"
-                        >详情</el-button>
+                        
                         <el-button
                             type="text"
                             icon="el-icon-delete"
@@ -46,8 +50,8 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next"
-                    :current-page="query.pageIndex"
-                    :page-size="query.pageSize"
+                    :current-page="query.pageindex"
+                    :page-size="query.pagesize"
                     :total="pageTotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
@@ -55,7 +59,7 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="详情" :visible.sync="editVisible" width="40%">
+        <el-dialog title="详情" :visible.sync="editVisible" width="50%">
             <el-button
                 @click="disabled=!disabled"
             >编辑</el-button>
@@ -73,7 +77,7 @@
 </template>
 
 <script>
-import { getVaccineData,postDeleteVaccine } from '../../../api/index';
+import { getVaccineData,postDeleteVaccine,postMVaccineData } from '../../../api/index';
 import CommonForm from './Form'
 export default {
     name: 'basetable',
@@ -84,8 +88,8 @@ export default {
         return {
             query: {
                 name: '',
-                pageIndex: 1,
-                pageSize: 10
+                pageindex: 1,
+                pagesize: 10
             },
             tableData: [],
             editVisible: false,
@@ -101,33 +105,36 @@ export default {
         this.getData();
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
-        getData() {
-            getVaccineData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
-            });
+        async getData() {
+            let {data,pagetotal} = await getVaccineData(this.query);
+            this.tableData = data;
+            this.pagetotal = Number(pagetotal);
+        },
+        async deleteVaccinesData(d){
+            let data = await postDeleteVaccine(d);
+            if(data.code === 0){
+                this.getData();
+                this.$message.success(`删除成功 `);
+            }else{
+                this.$message.error(`删除失败 `);
+            }
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
+            this.$set(this.query, 'pageindex', 1);
             this.getData();
         },
         // 删除操作
         handleDelete(row) {
             // 二次确认删除
-            this.$confirm('确定要删除吗？', '提示', {
+            this.$confirm('确定要下架吗？', '提示', {
                 type: 'warning'
             })
                 .then(() => {
-                    postDeleteVaccine(row.id).then(res=>{
-                        this.$message.success('删除成功');
-                    })
+                    this.deleteVaccinesData({id:row.id,outdate:new Date()})
                 })
                 .catch(() => {});
         },
-        
         // 编辑操作
         handleEdit(row) {
             this.formData = row;
@@ -137,14 +144,17 @@ export default {
         saveEdit() {
             this.$refs.form.onSubmit();
             this.editVisible = false;
+            this.$message.success(`修改成功`);
+            this.getData();
         },
         // 分页导航
         handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
+            this.$set(this.query, 'pageindex', val);
             this.getData();
         },
         handleDetail(row){
-            this.$router.push(`/inoculation/detail?id=${row.id}`)
+            
+            
         }
     }
 };
