@@ -36,11 +36,18 @@
                 </el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="{row}">
-                        
                         <el-button
                             type="text"
                             icon="el-icon-delete"
-                            class="red"
+                            class="[row.isexist?'highlight-ok':'highlight-no']"
+                            :disabled="!row.isexist"
+                            @click="handleEdit(row)"
+                        >编辑</el-button>
+                        <el-button
+                            type="text"
+                            icon="el-icon-delete"
+                            class="[row.isexist?'highlight-ok':'highlight-no']"
+                            :disabled="!row.isexist"
                             @click="handleDelete(row)"
                         >下架</el-button>
                     </template>
@@ -52,7 +59,7 @@
                     layout="total, prev, pager, next"
                     :current-page="query.pageindex"
                     :page-size="query.pagesize"
-                    :total="pageTotal"
+                    :total="pagetotal"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
@@ -60,13 +67,10 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog title="详情" :visible.sync="editVisible" width="50%">
-            <el-button
-                @click="disabled=!disabled"
-            >编辑</el-button>
+            
             <common-form
                 ref="form"
                 :form-data="formData"
-                :disabled="disabled"
             ></common-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -93,16 +97,12 @@ export default {
             },
             tableData: [],
             editVisible: false,
-            pageTotal: 0,
+            pagetotal: 0,
             form: {},
             formData:{},
             idx: -1,
             id: -1,
-            disabled:true
         };
-    },
-    created() {
-        this.getData();
     },
     methods: {
         async getData() {
@@ -156,6 +156,17 @@ export default {
             
             
         }
+    },
+    watch:{
+        '$route':{
+            immediate:true,
+            handler(value){
+                if(value.path === '/vaccine/detail'){
+                    this.getData();
+                }
+            }
+        }
+    
     }
 };
 </script>
@@ -177,8 +188,11 @@ export default {
     width: 100%;
     font-size: 14px;
 }
-.red {
+.highlight-ok {
     color: #ff0000;
+}
+.highlight-no{
+    color:black
 }
 .mr10 {
     margin-right: 10px;

@@ -9,19 +9,19 @@
             >
                 <el-form-item 
                     label="疫苗名称"
-                    prop="name"
-                    clearable
-                    filterable
+                    prop="fixedvaccinesid"
                 >
                     <el-select 
-                        v-model="form.name"
+                        v-model="form.fixedvaccinesid"
                         placeholder="请选择"
-                        @change="chooseVaccines"
+                        clearable
+                        filterable
+                        @change="changeFixedVacciens"
                     >
                         <el-option
                             v-for="(item,index) in fixedvacciens"
                             :label="item.name"
-                            :value="item"
+                            :value="item.id"
                             :key="index"
                         ></el-option>
                     </el-select>
@@ -134,16 +134,24 @@ export default {
             }else{
                 await postVaccineData(this.form);
                  this.$router.push('/vaccine/detail');
+
             }
         },
         async getSyncFixedVacciens(){
             let {data}  = await getFixedVaccines();
             this.fixedvacciens = data;
+        },
+        changeFixedVacciens(data){
+            this.fixedvacciens.find(item=>{
+                if(item.id === data){
+                    this.form.name = item.name
+                }
+            })
         }
     },
     created(){
         this.rules = {
-          name: { required: true, message: '请输入姓名', trigger: 'blur' },
+          fixedvaccinesid: { required: true, message: '请选择名称', trigger: 'blur' },
           count:{ required: true, message: '请输入数量', trigger: 'blur' },
           batchnumber:{ required: true, message: '请输入批号', trigger: 'blur' },
           company:{ required: true, message: '请输入公司', trigger: 'blur' },
@@ -153,5 +161,9 @@ export default {
         };
         this.getSyncFixedVacciens();
     },
+   
 };
 </script>
+<style scoped>
+
+</style>

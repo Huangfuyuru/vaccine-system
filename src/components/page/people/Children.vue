@@ -101,9 +101,6 @@ export default {
             id: -1
         };
     },
-    created() {
-        this.getData();
-    },
     methods: {
         // 获取 easy-mock 的模拟数据
         async getData() {
@@ -157,6 +154,17 @@ export default {
         handleDetail(row){
             this.$router.push(`/inoculation/detail?peopleid=${row.id}`)
         }
+    },
+    watch:{
+        '$route':{
+            immediate:true,
+            handler(value){
+                if(value.path === '/people/children'){
+                    this.getData();
+                }
+            }
+        }
+    
     }
 };
 </script>
