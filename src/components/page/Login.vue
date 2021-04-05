@@ -57,7 +57,7 @@ export default {
             let { code,data } = await postLoginUser(param);
             if(code === 0){
                 let ndata = JSON.stringify(data);
-                localStorage.setItem('ms_type',ndata.type);
+                localStorage.setItem('ms_type',data.type);
                 localStorage.setItem('ms_users',ndata);
                 this.$router.push('/');
             }

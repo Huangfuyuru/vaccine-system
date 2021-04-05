@@ -106,6 +106,12 @@ export default {
                         }
                     ]
                 },
+                
+                {
+                    icon: 'el-icon-pie-chart',
+                    index: 'charts',
+                    title: '图表'
+                },
                 {
                     icon: 'el-icon-lx-profile',
                     index: 'user',
@@ -118,26 +124,6 @@ export default {
                         {
                             index:'/user/detail',
                             title:'详情'
-                        }
-                    ]
-                },
-                {
-                    icon: 'el-icon-pie-chart',
-                    index: 'charts',
-                    title: '图表'
-                },
-                {
-                    icon: 'el-icon-lx-warn',
-                    index: '7',
-                    title: '错误处理',
-                    subs: [
-                        {
-                            index: 'permission',
-                            title: '权限测试'
-                        },
-                        {
-                            index: '404',
-                            title: '404页面'
                         }
                     ]
                 }
@@ -156,8 +142,10 @@ export default {
             this.collapse = msg;
             bus.$emit('collapse-content', msg);
         });
-        const type = localStorage.getItem('ms_type');
+        const type = Number(localStorage.getItem('ms_type'));
+        const users = JSON.parse(localStorage.getItem('ms_users'));
         if(type !== 0){
+            console.log('不是管理员')
             this.items.pop();
         }
     }
