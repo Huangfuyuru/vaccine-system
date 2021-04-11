@@ -10,7 +10,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-input v-model="query.name" placeholder="接种人姓名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -65,12 +65,89 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="50%">
-            <common-form
-                ref="form"
-                :form-data="formData"
-            ></common-form>
+            <el-form 
+                ref="form" 
+                :model="form" 
+                :rules="rules"
+                label-width="80px"
+            >
+                <el-form-item 
+                    label="姓名" 
+                    prop="name"
+                    clearable
+                >
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item 
+                            label="性别"
+                            prop="gender"
+                            clearable
+                        >
+                            <el-select v-model="form.gender" placeholder="请选择">
+                                <el-option key="woman" label="女" value="1"></el-option>
+                                <el-option key="man" label="男" value="0"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-form-item 
+                    label="身份证号"
+                    prop="identitycard"
+                    clearable
+                >
+                    <el-input v-model="form.identitycard"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="出生日期"
+                    prop="birthday"
+                    clearable
+                >
+                    <el-date-picker
+                        type="date"
+                        placeholder="选择日期"
+                        v-model="form.birthday"
+                        value-format="yyyy-MM-dd"
+                        style="width: 100%;"
+                    ></el-date-picker>
+                </el-form-item>
+                <el-form-item 
+                    label="家庭住址"
+                    prop="address"
+                    clearable
+                >
+                    <el-input v-model="form.address"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    prop="familyname"
+                    label="家长姓名"
+                    clearable
+                >
+                    <el-input v-model="form.familyname"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="联系电话"
+                    prop="tel"
+                    clearable
+                >
+                    <el-input 
+                        v-model="form.tel"
+                        type="tel">
+                    </el-input>
+                </el-form-item>
+                
+                <el-form-item label="备注">
+                    <el-input 
+                        type="textarea" 
+                        rows="5" 
+                        v-model="form.desc"
+                        placeholder="如过敏史"
+                    ></el-input>
+                </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
@@ -92,17 +169,12 @@ export default {
                 pageindex: 1,
                 pagesize: 5
             },
-            tableData: [],
             editVisible: false,
             pagetotal: 0,
             form: {},
-            formData:{},
-            idx: -1,
-            id: -1
         };
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
         async getData() {
             let {data,pagetotal} = await getPeopleData(this.query);
             this.tableData = data;
@@ -110,7 +182,6 @@ export default {
         },
         async deleteChildData(id){
             let data = await postDeletePeople(id);
-            console.log(data.code)
             if(data.code === 0){
                 this.getData();
                 this.$message.success(`删除成功 `);
@@ -118,14 +189,7 @@ export default {
                 this.$message.error(`删除失败 `);
             }
         },
-        // 触发搜索按钮
-        handleSearch() {
-            this.$set(this.query, 'pageindex', 1);
-            this.getData();
-        },
-        // 删除操作
         handleDelete(row) {
-            // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
@@ -134,25 +198,26 @@ export default {
                 })
                 .catch(() => {});
         },
-        // 编辑操作
         handleEdit(row) {
-            this.formData = row;
+            this.form= row;
             this.editVisible = true;
         },
-        // 保存编辑
         saveEdit() {
             this.$refs.form.onSubmit();
             this.editVisible = false;
             this.$message.success(`修改成功`);
             this.getData();
         },
-        // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageindex', val);
             this.getData();
         },
         handleDetail(row){
             this.$router.push(`/inoculation/detail?peopleid=${row.id}`)
+        },
+        cancel(){
+            this.editVisible = false;
+            this.$refs.form.resetFields();
         }
     },
     watch:{

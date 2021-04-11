@@ -10,7 +10,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-input v-model="query.name" placeholder="疫苗名称" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -68,10 +68,81 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="详情" :visible.sync="editVisible" width="50%">
             
-            <common-form
-                ref="form"
-                :form-data="formData"
-            ></common-form>
+            <div class="form-box">
+            <el-form ref="form" 
+                :model="form" 
+                :rules="rules"
+                :disabled="disabled"
+                label-width="80px"
+            >
+                <el-form-item 
+                    label="疫苗名称"
+                    prop="fixedvaccinesid"
+                >
+                    <el-select 
+                        v-model="form.fixedvaccinesid"
+                        placeholder="请选择"
+                        clearable
+                        filterable
+                        @change="changeFixedVacciens"
+                    >
+                        <el-option
+                            v-for="(item,index) in fixedvacciens"
+                            :label="item.name"
+                            :value="item.id"
+                            :key="index"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item 
+                    label="数量"
+                    prop="count"
+                    clearable
+                >
+                    <el-input type="number" v-model="form.count"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="有效期"
+                    prop="deadline"
+                    clearable
+                >
+                    <el-date-picker
+                        type="date"
+                        placeholder="选择日期"
+                        v-model="form.deadline"
+                        value-format="yyyy-MM-dd"
+                        style="width: 100%;"
+                    ></el-date-picker>
+                </el-form-item>
+                <el-form-item 
+                    label="批号"
+                    prop="batchnumber"
+                    clearable
+                >
+                    <el-input v-model="form.batchnumber"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="厂家"
+                    prop="company"
+                    clearable
+                >
+                    <el-input v-model="form.company"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="入库时间"
+                    prop="setdate"
+                    clearable
+                >
+                    <el-date-picker
+                        type="date"
+                        placeholder="选择日期"
+                        v-model="form.setdate"
+                        value-format="yyyy-MM-dd"
+                        style="width: 100%;"
+                    ></el-date-picker>
+                </el-form-item>
+            </el-form>
+            </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
@@ -82,12 +153,8 @@
 
 <script>
 import { getVaccineData,postDeleteVaccine,postMVaccineData } from '../../../api/index';
-import CommonForm from './Form'
 export default {
     name: 'basetable',
-    components:{
-        CommonForm
-    },
     data() {
         return {
             query: {
@@ -119,12 +186,6 @@ export default {
                 this.$message.error(`删除失败 `);
             }
         },
-        // 触发搜索按钮
-        handleSearch() {
-            this.$set(this.query, 'pageindex', 1);
-            this.getData();
-        },
-        // 删除操作
         handleDelete(row) {
             // 二次确认删除
             this.$confirm('确定要下架吗？', '提示', {
@@ -135,19 +196,15 @@ export default {
                 })
                 .catch(() => {});
         },
-        // 编辑操作
         handleEdit(row) {
             this.formData = row;
             this.editVisible = true;
         },
-        // 保存编辑
-        saveEdit() {
-            this.$refs.form.onSubmit();
+        async saveEdit() {
+            await postMVaccineData(this.form)
             this.editVisible = false;
-            this.$message.success(`修改成功`);
             this.getData();
         },
-        // 分页导航
         handlePageChange(val) {
             this.$set(this.query, 'pageindex', val);
             this.getData();
@@ -191,8 +248,8 @@ export default {
 .highlight-ok {
     color: #ff0000;
 }
-.highlight-no{
-    color:black
+.highlight-no {
+    color: black;
 }
 .mr10 {
     margin-right: 10px;
