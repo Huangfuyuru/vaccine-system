@@ -128,11 +128,9 @@
 
 <script>
 import { getUserData,postDUser,postMUser } from '../../../api/index';
+import {cloneDeep} from 'lodash'
 export default {
     name: 'basetable',
-    components:{
-        CommonForm
-    },
     data() {
         return {
             query: {
@@ -168,7 +166,7 @@ export default {
                 .catch(() => {});
         },
         handleEdit(index, row) {
-            this.form = row;
+            this.form = cloneDeep(row);
             this.editVisible = true;
         },
         saveEdit() {
@@ -183,8 +181,8 @@ export default {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
         },
-        onSubmit() {
-            const info = await postMUser({...this.form});
+        async onSubmit() {
+            const info = await postMUser(this.form);
             if(!info.code){
                 this.$message.success(info.msg);
                 this.getData();

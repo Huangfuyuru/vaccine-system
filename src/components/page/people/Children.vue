@@ -3,13 +3,13 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 儿童详情
+                    <i class="el-icon-lx-cascades"></i> 接种人详情
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="接种人姓名" class="handle-input mr10"></el-input>
+                <el-input clearable v-model="query.name" placeholder="接种人姓名" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
             </div>
             <el-table
@@ -68,7 +68,6 @@
             <el-form 
                 ref="form" 
                 :model="form" 
-                :rules="rules"
                 label-width="80px"
             >
                 <el-form-item 
@@ -155,13 +154,10 @@
 </template>
 
 <script>
-import { getPeopleData,postDeletePeople } from '../../../api/index';
-import CommonForm from './Form'
+import { getPeopleData,postDeletePeople,postMPeopleData } from '../../../api/index';
+import {cloneDeep} from 'lodash'
 export default {
     name: 'basetable',
-    components:{
-        CommonForm
-    },
     data() {
         return {
             query: {
@@ -172,6 +168,7 @@ export default {
             editVisible: false,
             pagetotal: 0,
             form: {},
+            tableData:[],
         };
     },
     methods: {
@@ -199,13 +196,12 @@ export default {
                 .catch(() => {});
         },
         handleEdit(row) {
-            this.form= row;
+            this.form= cloneDeep(row);
             this.editVisible = true;
         },
-        saveEdit() {
-            this.$refs.form.onSubmit();
+        async saveEdit() {
+            await postMPeopleData(this.form);
             this.editVisible = false;
-            this.$message.success(`修改成功`);
             this.getData();
         },
         handlePageChange(val) {
@@ -229,7 +225,6 @@ export default {
                 }
             }
         }
-    
     }
 };
 </script>

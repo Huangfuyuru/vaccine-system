@@ -8,10 +8,10 @@
                 <el-breadcrumb-item>新建</el-breadcrumb-item>
             </el-breadcrumb>
             <div class="form-box">
+            <el-card>
             <el-form ref="form" 
                 :model="form" 
                 :rules="rules"
-                :disabled="disabled"
                 label-width="80px"
             >
                 <el-form-item 
@@ -81,12 +81,12 @@
                     ></el-date-picker>
                 </el-form-item>
                 <el-form-item 
-                    v-if="!formData.name.length"
                 >
                     <el-button type="primary" @click="onSubmit">提交</el-button>
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
+            </el-card>
             </div>
         </div>
     </div>
@@ -125,7 +125,6 @@ export default {
         },
         async postData(){
             await postVaccineData(this.form);
-            this.$ref.form.resetFields();
             this.$router.push('/vaccine/detail');
         },
         async getSyncFixedVacciens(){
@@ -152,5 +151,20 @@ export default {
         };
         this.getSyncFixedVacciens();
     },
+    watch:{
+        '$route':{
+            immediate:true,
+            handler(value){
+                if(value.path === '/vaccine/create'){
+                    this.$refs.form && this.$refs.form.resetFields();
+                }
+            }
+        }
+    }
 };
 </script>
+<style>
+.form-box{
+    margin-top:5px
+}
+</style>

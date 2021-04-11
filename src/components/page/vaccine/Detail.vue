@@ -71,8 +71,6 @@
             <div class="form-box">
             <el-form ref="form" 
                 :model="form" 
-                :rules="rules"
-                :disabled="disabled"
                 label-width="80px"
             >
                 <el-form-item 
@@ -84,7 +82,6 @@
                         placeholder="请选择"
                         clearable
                         filterable
-                        @change="changeFixedVacciens"
                     >
                         <el-option
                             v-for="(item,index) in fixedvacciens"
@@ -152,7 +149,8 @@
 </template>
 
 <script>
-import { getVaccineData,postDeleteVaccine,postMVaccineData } from '../../../api/index';
+import { getVaccineData,postDeleteVaccine,postMVaccineData, getFixedVaccines } from '../../../api/index';
+import {cloneDeep} from 'lodash'
 export default {
     name: 'basetable',
     data() {
@@ -162,13 +160,11 @@ export default {
                 pageindex: 1,
                 pagesize: 10
             },
+            fixedvacciens:[],
             tableData: [],
             editVisible: false,
             pagetotal: 0,
             form: {},
-            formData:{},
-            idx: -1,
-            id: -1,
         };
     },
     methods: {
@@ -197,7 +193,7 @@ export default {
                 .catch(() => {});
         },
         handleEdit(row) {
-            this.formData = row;
+            this.form = cloneDeep(row);
             this.editVisible = true;
         },
         async saveEdit() {
@@ -212,8 +208,16 @@ export default {
         handleDetail(row){
             
             
-        }
+        },
+        async getSyncFixedVacciens(){
+            let {data}  = await getFixedVaccines();
+            this.fixedvacciens = data;
+        },
     },
+    created(){
+        this.getSyncFixedVacciens();
+    },
+    
     watch:{
         '$route':{
             immediate:true,

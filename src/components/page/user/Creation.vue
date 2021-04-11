@@ -7,8 +7,10 @@
                 </el-breadcrumb-item>
                 <el-breadcrumb-item>新建</el-breadcrumb-item>
             </el-breadcrumb>
-            <div class="form-box">
-            <el-form ref="form" 
+        </div>
+        <div class="form-box">
+            <el-form 
+                ref="form" 
                 :model="form" 
                 :rules="rules"
                 label-width="80px"
@@ -96,12 +98,8 @@
 </template>
 
 <script>
-import CommonForm from "./Form"
 export default {
     name: 'creation',
-    components:{
-        CommonForm
-    },
     data:function(){
         return {
             form:{
@@ -119,7 +117,7 @@ export default {
         }
     },
     methods: {
-        onSubmit() {
+        async onSubmit() {
             if(!this.formData.name){
                 const info = await postRegister({...this.form});
                 if(!info.code){
@@ -132,7 +130,7 @@ export default {
 
             }
         },
-        sendCode(){
+        async sendCode(){
             let num = 6;
             this.isSendCode = true;
             let t = setInterval(()=>{

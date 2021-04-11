@@ -3,11 +3,12 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-calendar"></i> 表单
+                    <i class="el-icon-lx-calendar"></i> 接种人
                 </el-breadcrumb-item>
                 <el-breadcrumb-item>新建</el-breadcrumb-item>
             </el-breadcrumb>
             <div class="form-box">
+            <el-card>
             <el-form 
                 ref="form" 
                 :model="form" 
@@ -94,6 +95,7 @@
                     <el-button>取消</el-button>
                 </el-form-item>
             </el-form>
+            </el-card>
         </div>
         </div>
     </div>
@@ -131,7 +133,7 @@ export default {
         },
         async postData(){
             await postPeopleData(this.form);
-            this.$ref.form.resetFields();
+            //this.$ref.form.resetFields();
             this.$router.push('/people/children');
         }
     },
@@ -146,5 +148,20 @@ export default {
           familyname: { required: true, message: '请输入家长姓名', trigger: 'blur' },
         }
     },
+    watch:{
+        '$route':{
+            immediate:true,
+            handler(value){
+                if(value.path === '/people/create'){
+                    this.$refs.form && this.$refs.form.resetFields();
+                }
+            }
+        }
+    }
 };
 </script>
+<style>
+.form-box{
+    margin-top:5px
+}
+</style>
