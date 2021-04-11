@@ -1,5 +1,6 @@
 export default {
-    POST_LOGIN: '/login/users',//登录
+    POST_REGISTER_CODE: '/register/code',//发送注册验证码
+    POST_REGISTER: '/register/create',
 
     GET_CHILDS_DATA: '/childs/detail',
     POST_CHILDS_DATA: '/childs/create',//新建
@@ -15,9 +16,11 @@ export default {
     GET_INOCULATION_DATA: '/inoculations/detail',
     POST_INOCULATION_DATA: '/inoculations/create',
 
+    POST_LOGIN: '/users/login',//登录
     GET_USER_DATA: '/users/detail',
-    POST_USER_DATA: '/users/create',
     GET_USER_COUNT: '/users/count',
+    POST_MODIFICATION_USER: '/users/modify',
+    POST_DELETE_USERS_DATA: '/users/delete',
 
     GET_COUNT: '/vaccines/count',//接种人数，接种疫苗数，疫苗种类数
 };

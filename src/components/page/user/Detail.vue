@@ -3,20 +3,14 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 儿童详情
+                    <i class="el-icon-lx-cascades"></i> 用户详情
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button
-                    type="primary"
-                    icon="el-icon-delete"
-                    class="handle-del mr10"
-                    @click="delAllSelection"
-                >批量删除</el-button>
                 <el-input v-model="query.name" placeholder="姓名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -64,12 +58,68 @@
 
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="40%">
-            <common-form
-                ref="form"
-                :form-data="formData"
-            ></common-form>
+            <el-form 
+                ref="form" 
+                :model="form" 
+                :rules="rules"
+                label-width="80px"
+            >
+                <el-form-item 
+                    label="姓名" 
+                    prop="name"
+                    clearable
+                >
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="邮箱号码" 
+                    prop="account"
+                    clearable
+                >
+                    <el-input v-model="form.account" type="email" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="用户角色"
+                    prop="type"
+                    clearable
+                >
+                    <el-select v-model="form.type" placeholder="请选择">
+                        <el-option key="one" label="管理员" :value="1"></el-option>
+                        <el-option key="two" label="接种员" :value="0"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item 
+                    label="密码" 
+                    prop="pass"
+                    clearable
+                >
+                    <el-input v-model="form.pass"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="重复密码" 
+                    prop="repetition"
+                    clearable
+                >
+                    <el-input v-model="form.repetition"></el-input>
+                </el-form-item>
+                
+                <el-form-item 
+                    label="联系电话" 
+                    prop="tel"
+                    clearable
+                >
+                    <el-input type="number" v-model="form.tel"></el-input>
+                </el-form-item>
+                <el-form-item 
+                    label="所属单位" 
+                    prop="unit"
+                    clearable
+                >
+                    <el-input v-model="form.unit"></el-input>
+                </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button @click="cancleEdit">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
@@ -77,8 +127,7 @@
 </template>
 
 <script>
-import { getUserData } from '../../../api/index';
-import CommonForm from './Form'
+import { getUserData,postDUser,postMUser } from '../../../api/index';
 export default {
     name: 'basetable',
     components:{
@@ -92,80 +141,57 @@ export default {
                 pageSize: 10
             },
             tableData: [],
-            multipleSelection: [],
-            delList: [],
             editVisible: false,
             pageTotal: 0,
             form: {},
-            formData:{},
-            idx: -1,
-            id: -1
         };
     },
     created() {
         this.getData();
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
         getData() {
             getUserData(this.query).then(res => {
                 this.tableData = res.list;
                 this.pageTotal = res.pageTotal || 50;
             });
         },
-        // 触发搜索按钮
-        handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
-            this.getData();
-        },
-        // 删除操作
         handleDelete(index, row) {
-            // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
-                .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
+                .then(async () => {
+                    const info = await postDUser({id:row.id});
+                    this.$message.success(info.msg);
+                    this.getData(this.query);
                 })
                 .catch(() => {});
         },
-        // 多选操作
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-        },
-        delAllSelection() {
-            const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
-            }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
-        },
-        // 编辑操作
         handleEdit(index, row) {
-            this.idx = index;
-            this.formData = row;
-            console.log(row)
+            this.form = row;
             this.editVisible = true;
         },
-        // 保存编辑
         saveEdit() {
-            this.$refs.form.onSubmit();
+            this.onSubmit();
             this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
         },
-        // 分页导航
+        cancleEdit(){
+            this.$refs.form.resetFields();
+            this.editVisible = false;
+        },
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
         },
-        handleDetail(row){
-            this.$router.push(`/inoculation/detail?peopleid=${row.id}`)
-        }
+        onSubmit() {
+            const info = await postMUser({...this.form});
+            if(!info.code){
+                this.$message.success(info.msg);
+                this.getData();
+            }else{
+                this.$message.success(info.msg);
+            }
+        },
     }
 };
 </script>

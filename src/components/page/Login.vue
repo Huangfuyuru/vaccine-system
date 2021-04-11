@@ -54,12 +54,14 @@ export default {
             });
         },
         async postAsyncLoginUser(param){
-            let { code,data } = await postLoginUser(param);
+            let { code,data,msg } = await postLoginUser(param);
             if(code === 0){
                 let ndata = JSON.stringify(data);
                 localStorage.setItem('ms_type',data.type);
                 localStorage.setItem('ms_users',ndata);
                 this.$router.push('/');
+            }else{
+                this.$message.error(msg)
             }
         }
     },

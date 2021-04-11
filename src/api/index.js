@@ -8,6 +8,38 @@ export const postLoginUser = data => {
     });
 };
 
+export const postRegisterCode = data => {
+    return request({
+        url: URL.POST_REGISTER_CODE,
+        method: 'post',
+        data
+    });
+};
+
+export const postRegister = data => {
+    return request({
+        url: URL.POST_REGISTER,
+        method: 'post',
+        data
+    });
+};
+
+export const postMUser = data => {
+    return request({
+        url: URL.POST_MODIFICATION_USER,
+        method: 'post',
+        data
+    });
+};
+
+export const postDUser = data => {
+    return request({
+        url: URL.POST_DELETE_USERS_DATA,
+        method: 'post',
+        data
+    });
+};
+
 export const getPeopleData = data => {
     return request({
         url: URL.GET_CHILDS_DATA,

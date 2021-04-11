@@ -4,7 +4,6 @@
             <el-form ref="form" 
                 :model="form" 
                 :rules="rules"
-                :disabled="disabled"
                 label-width="80px"
             >
                 <el-form-item 
@@ -19,16 +18,16 @@
                     prop="account"
                     clearable
                 >
-                    <el-input v-model="form.account"></el-input>
+                    <el-input v-model="form.account" type="email"></el-input>
                 </el-form-item>
                 <el-row>
                     <el-col :span="12">
                         <el-form-item 
                             label="验证码" 
-                            prop="verificationCode"
+                            prop="confirmcode"
                             clearable
                         >
-                            <el-input type="number" v-model="form.verificationCode"></el-input>
+                            <el-input type="number" v-model="form.confirmcode"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -42,7 +41,7 @@
                 </el-row>
                 <el-form-item 
                     label="用户角色"
-                    prop="role"
+                    prop="type"
                     clearable
                 >
                     <el-select v-model="form.type" placeholder="请选择">
@@ -52,10 +51,10 @@
                 </el-form-item>
                 <el-form-item 
                     label="密码" 
-                    prop="password"
+                    prop="pass"
                     clearable
                 >
-                    <el-input v-model="form.password"></el-input>
+                    <el-input v-model="form.pass"></el-input>
                 </el-form-item>
                 <el-form-item 
                     label="重复密码" 
@@ -80,7 +79,6 @@
                     <el-input v-model="form.unit"></el-input>
                 </el-form-item>
                 <el-form-item 
-                    v-if="!formData.name.length"
                 >
                     <el-button type="primary" @click="onSubmit">提交</el-button>
                     <el-button>取消</el-button>
@@ -92,39 +90,37 @@
 
 <script>
 import { clone } from 'lodash'
+import {postRegisterCode,postRegister} from '../../../api/index'
 export default {
-    name: 'form',
-    props:{
-        formData:{
-            type:Object,
-            default:()=>({
-                name:'',
-                account:'',//邮箱
-                verificationCode:'',//验证码
-                password:'',//密码
-                repetition:'',//重复密码
-                role:'',//用户角色
-                tel:'',//电话
-                unit:'',//接种单位
-            })
-        },
-        disabled:{
-            type:Boolean,
-            default:false,
-           
-        }
-    },
+    name: 'user-form',
     data() {
         return {
             isSendCode:false,
-            form:clone(this.formData),
+            form:{
+                name:'',
+                account:'',//邮箱
+                confirmcode:'',//验证码
+                pass:'',//密码
+                repetition:'',//重复密码
+                type:'',//用户角色
+                tel:'',//电话
+                unit:'',//接种单位
+            },
             codeText:'发送验证码'
         };
     },
     methods: {
         onSubmit() {
-            if(!this.disabled){
-                this.$message.success('提交成功！');
+            if(!this.formData.name){
+                const info = await postRegister({...this.form});
+                if(!info.code){
+                    this.$message.success('提交成功！');
+                    this.$router.push('/user/detail');
+                }else{
+                    this.$message.success(info.msg);
+                }
+            }else{
+
             }
         },
         sendCode(){
@@ -140,17 +136,23 @@ export default {
                     num--;
                 }
                 
-            },1000)
+            },1000);
+            let info = await postRegisterCode({account:this.form.account});
+            if(info.code){
+                this.$message.error(info.msg);
+                return;
+            }
+
         }
     },
     created(){
         this.rules = {
           name: { required: true, message: '请输入姓名', trigger: 'blur' },
           account: { required: true, message: '请输入邮箱', trigger: 'blur' },
-          verificationCode: { required: true, message: '请输入验证码', trigger: 'blur' },
-          password: { required: true, message: '请输入密码', trigger: 'blur' },
+          confirmcode: { required: true, message: '请输入验证码', trigger: 'blur' },
+          pass: { required: true, message: '请输入密码', trigger: 'blur' },
           repetition: { required: true, message: '请再次输入密码', trigger: 'blur' },
-          role: { required: true, message: '请输入角色', trigger: 'blur' },
+          type: { required: true, message: '请输入角色', trigger: 'blur' },
           tel: { required: true, message: '请输入电话', trigger: 'blur' },
           unit: { required: true, message: '请输入所属单位', trigger: 'blur' },
         }
