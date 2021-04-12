@@ -9,7 +9,7 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="疫苗名称" class="handle-input mr10"></el-input>
+                <el-input clearable v-model="query.name" placeholder="疫苗名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
             </div>
             <el-table
@@ -82,6 +82,7 @@
                         placeholder="请选择"
                         clearable
                         filterable
+                        @change="changeFixedVacciens"
                     >
                         <el-option
                             v-for="(item,index) in fixedvacciens"
@@ -141,7 +142,7 @@
             </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button @click="cancleEdit">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
@@ -205,14 +206,21 @@ export default {
             this.$set(this.query, 'pageindex', val);
             this.getData();
         },
-        handleDetail(row){
-            
-            
-        },
         async getSyncFixedVacciens(){
             let {data}  = await getFixedVaccines();
             this.fixedvacciens = data;
         },
+        cancleEdit(){
+            this.$refs.form.resetFields();
+            this.editVisible = false;
+        },
+        changeFixedVacciens(data){
+            this.fixedvacciens.find(item=>{
+                if(item.id === data){
+                    this.form.name = item.name
+                }
+            })
+        }
     },
     created(){
         this.getSyncFixedVacciens();
