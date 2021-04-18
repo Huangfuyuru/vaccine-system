@@ -107,7 +107,7 @@ export default {
                 count:'',//数量
                 setdate:'',//入库时间，
                 batchnumber:'',//批号
-                isexist:true,
+                isexist:'true',
                 outdate:''
             },
             fixedvacciens:[]

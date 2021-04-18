@@ -146,11 +146,9 @@ export default {
         this.getData();
     },
     methods: {
-        getData() {
-            getUserData(this.query).then(res => {
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
-            });
+        async getData() {
+            const {data} = await getUserData();
+            this.tableData = data;
         },
         handleDelete(index, row) {
             this.$confirm('确定要删除吗？', '提示', {

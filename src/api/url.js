@@ -12,6 +12,7 @@ export default {
     POST_DELETE_VACCINE_DATA: '/vaccines/delete',//删除
     POST_MODIFICATION_VACCINE: '/vaccines/modify',//修改疫苗
     GET_FIXEDVACCINE_DATA: '/vaccines/fixedvaccines',//得到固定疫苗信息渲染
+    GET_VACCINE_DATA_DETAIL: '/vaccines/detailone',
 
     GET_INOCULATION_DATA: '/inoculations/detail',
     POST_INOCULATION_DATA: '/inoculations/create',

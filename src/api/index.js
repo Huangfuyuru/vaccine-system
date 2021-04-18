@@ -120,11 +120,11 @@ export const postDeleteVaccine = data => {
     });
 };
 
-export const getInoculationData = query => {
+export const getInoculationData = data => {
     return request({
         url: URL.GET_INOCULATION_DATA,
         method: 'post',
-        query
+        data
     });
 };
 
@@ -167,3 +167,12 @@ export const getFixedVaccines = async query => {
         query
     });
 };
+
+export const getVaccinesDetail = async data=> {
+    return await request({
+        url: URL.GET_VACCINE_DATA_DETAIL,
+        method: 'post',
+        data
+    });
+};
+

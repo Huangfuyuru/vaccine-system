@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 接种详情
+                    <i class="el-icon-lx-cascades"></i> 疫苗详情
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>

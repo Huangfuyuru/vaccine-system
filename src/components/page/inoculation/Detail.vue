@@ -26,6 +26,11 @@
                 <el-table-column prop="ordinal" label="针剂数"></el-table-column>
                 <el-table-column prop="inoculatedate" label="接种日期"></el-table-column>
                 <el-table-column prop="reaction" label="反应"></el-table-column>
+                <el-table-column label="疫苗详情">
+                    <template slot-scope="{row}">
+                        <el-button type="text" @click="handleVaccinesDetail(row.vaccinesid)">详情</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination
@@ -37,12 +42,21 @@
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
+            <el-dialog title="疫苗详情" :visible.sync="vaccinesShow" width="50%">
+                <el-card>
+                    <div>名称:{{vaccinesDetail.name || '-'}}</div>
+                    <div>数量:{{vaccinesDetail.count || '-'}}</div>
+                    <div>批号:{{vaccinesDetail.batchnumber || '-'}}</div>
+                    <div>厂家:{{vaccinesDetail.company || '-'}}</div>
+                    <div>有效期:{{vaccinesDetail.deadline|| '-'}}</div>
+                </el-card> 
+            </el-dialog>
         </div>
     </div>
 </template>
 
 <script>
-import { getInoculationData } from '../../../api/index';
+import { getInoculationData ,getVaccinesDetail} from '../../../api/index';
 export default {
     name: 'inoculation-table',
     data() {
@@ -56,6 +70,8 @@ export default {
             pagetotal: 0,
             form: {},
             tableData:[],
+            vaccinesShow:false,
+            vaccinesDetail:{}
         };
     },
     methods: {
@@ -67,15 +83,21 @@ export default {
         handlePageChange(val) {
             this.$set(this.query, 'pageindex', val);
             this.getData();
+        },
+        async handleVaccinesDetail(id){
+            this.vaccinesShow = true;
+            const {data} = await getVaccinesDetail({id});
+            this.vaccinesDetail = data;
+            console.log(id)
         }
     },
     watch:{
         '$route':{
             immediate:true,
             handler(value){
-            console.log(value)
                 if(value.path === '/inoculation/detail'){
                     this.query.childsname=value.query.childsname || '';
+                    console.log(this.query)
                     this.getData();
                 }
             }

@@ -168,6 +168,19 @@ export default {
                 reaction:this.reactionInoculation
             }
             await postInoculationData(params);
+            Object.assign(this,{
+            active:0,
+            identitycard:'',
+            peopleDetail:{},
+            fixedvacciens:[],
+            fixedvaccinesid:'',
+            fixedvacciensDetail:{},
+            vaccinesArr:[],
+            vaccinesid:'',
+            vaccinesname:'',
+            inoculatedate:'',
+            ordinal:0,
+            reactionInoculation:''})
             this.$router.push('/inoculation/detail');
         }
     }
