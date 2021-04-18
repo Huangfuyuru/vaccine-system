@@ -32,7 +32,7 @@
                         <div>家长姓名:{{peopleDetail.familyname|| '-'}}</div>
                         <div>联系电话:{{peopleDetail.tel || '-'}}</div>
                         <div>备注:{{peopleDetail.comment || '-'}}</div>
-                        <div>创建时间:{{peopleDetail.date || '-'}}</div>
+                        <div>创建时间:{{peopleDetail.setdate|| '-'}}</div>
                     </div>
                 </div>
                 <div v-else-if="active === 1">
@@ -93,12 +93,12 @@
                     <div>
                         <span class="detail">接种反应:</span>
                         <el-input 
-                            v-model="reaction" 
+                            v-model="reactionInoculation" 
                             placeholder="请输入"
                             class="search-input"
                             type="textarea"
-                            :rows="5"
-                        ></el-input>
+                        >
+                        </el-input>
                     </div>
                     <div>
                         <el-button @click="submit">提交</el-button>
@@ -122,11 +122,12 @@ export default {
             fixedvacciens:[],
             fixedvaccinesid:'',
             fixedvacciensDetail:{},
-            vaccinesArr:[{id:'123',batchnumber:'2021'},{id:'124',batchnumber:'2022'}],
+            vaccinesArr:[],
             vaccinesid:'',
             vaccinesname:'',
             inoculatedate:'',
-            ordinal:0
+            ordinal:0,
+            reactionInoculation:''
         }
     },
     created(){
@@ -134,10 +135,10 @@ export default {
     },
     methods:{
         next(){
-            if(this.active++>2) this.active=0;
+           if(this.active++>2) this.active=0;
         },
         async searchPeople(){
-            const {code,data} = await getPeopleData(this.identitycard);
+            const {code,data} = await getPeopleData({identitycard:this.identitycard});
             if(code === 0){
                 this.peopleDetail = data;
             }else{
@@ -151,7 +152,7 @@ export default {
         async changeFixedVacciens(){
             this.fixedvacciensDetail=this.fixedvacciens.find(item=>item.id === this.fixedvaccinesid);
             const {data} = await getVaccineData({fixedvaccinesid:this.fixedvaccinesid});
-            this.vaccinesArr = (data || []).filter(item=>item.isExist === true && item.count>0 );
+            this.vaccinesArr = (data || []).filter(item=>item.isexist === true && item.count>0 );
         },
         changeVaccindesId(item){
             this.vaccinesname = item.name;
@@ -164,9 +165,9 @@ export default {
                 vaccinesid:this.vaccinesid,
                 ordinal:this.ordinal,
                 inoculatedate:this.inoculatedate,
-                reaction:this.reaction
+                reaction:this.reactionInoculation
             }
-            await postInoculationData(this.params);
+            await postInoculationData(params);
             this.$router.push('/inoculation/detail');
         }
     }

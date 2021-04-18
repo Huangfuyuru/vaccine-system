@@ -18,7 +18,6 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
@@ -61,7 +60,6 @@
             <el-form 
                 ref="form" 
                 :model="form" 
-                :rules="rules"
                 label-width="80px"
             >
                 <el-form-item 

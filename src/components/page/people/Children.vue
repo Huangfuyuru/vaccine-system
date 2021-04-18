@@ -210,7 +210,7 @@ export default {
             this.getData();
         },
         handleDetail(row){
-            this.$router.push(`/inoculation/detail?childsname=${row.id}`)
+            this.$router.push(`/inoculation/detail?childsname=${row.name}`)
         },
         cancel(){
             this.editVisible = false;

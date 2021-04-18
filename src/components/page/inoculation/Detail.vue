@@ -11,7 +11,7 @@
         <div class="container">
             <div class="handle-box">
                 <el-input v-model="query.childsname" placeholder="接种人姓名" class="handle-input mr10"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
             </div>
             <el-table
                 :data="tableData"
@@ -48,7 +48,7 @@ export default {
     data() {
         return {
             query: {
-                name: '',
+                childsname: '',
                 pageindex: 1,
                 pagesize: 5
             },
@@ -73,7 +73,9 @@ export default {
         '$route':{
             immediate:true,
             handler(value){
+            console.log(value)
                 if(value.path === '/inoculation/detail'){
+                    this.query.childsname=value.query.childsname || '';
                     this.getData();
                 }
             }

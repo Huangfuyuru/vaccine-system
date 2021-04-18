@@ -139,7 +139,7 @@ export const postInoculationData = data => {
 export const getUserData = query => {
     return request({
         url: URL.GET_USER_DATA,
-        method: 'get',
+        method: 'post',
         query
     });
 };
