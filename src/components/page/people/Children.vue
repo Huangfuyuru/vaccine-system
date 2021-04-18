@@ -3,8 +3,9 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 接种人详情
+                    <i class="el-icon-lx-cascades"></i> 接种人
                 </el-breadcrumb-item>
+                <el-breadcrumb-item>新建</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -209,7 +210,7 @@ export default {
             this.getData();
         },
         handleDetail(row){
-            this.$router.push(`/inoculation/detail?peopleid=${row.id}`)
+            this.$router.push(`/inoculation/detail?childsname=${row.id}`)
         },
         cancel(){
             this.editVisible = false;

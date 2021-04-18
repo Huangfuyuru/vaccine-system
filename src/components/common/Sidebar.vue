@@ -72,7 +72,7 @@ export default {
                         },
                         {
                             index: '/people/children',
-                            title: '儿童'
+                            title: '详情'
                         }
                     ]
                 },
@@ -107,15 +107,15 @@ export default {
                     ]
                 },
                 
-                {
-                    icon: 'el-icon-pie-chart',
-                    index: 'charts',
-                    title: '图表'
-                },
+                // {
+                //     icon: 'el-icon-pie-chart',
+                //     index: 'charts',
+                //     title: '图表'
+                // },
                 {
                     icon: 'el-icon-lx-profile',
                     index: 'user',
-                    title: '用户',
+                    title: '用户信息',
                     subs:[
                         {
                             index:'/user/create',
@@ -132,7 +132,6 @@ export default {
     },
     computed: {
         onRoutes() {
-            console.log(this.$route.path)
             return this.$route.path.replace('/', '');
         }
     },

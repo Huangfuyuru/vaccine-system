@@ -123,7 +123,7 @@ export const postDeleteVaccine = data => {
 export const getInoculationData = query => {
     return request({
         url: URL.GET_INOCULATION_DATA,
-        method: 'get',
+        method: 'post',
         query
     });
 };
