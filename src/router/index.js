@@ -22,42 +22,42 @@ export default new Router({
                 {
                     path: '/people/create',
                     component: () => import(/* webpackChunkName: "createpeople" */ '../components/page/people/Creation.vue'),
-                    meta: { title: '新建' }
+                    meta: { title: '接种人-新建' }
                 },
                 {
                     path: '/people/children',
                     component: () => import(/* webpackChunkName: "children" */ '../components/page/people/Children.vue'),
-                    meta: { title: '儿童' }
+                    meta: { title: '接种人-详情'}
                 },
                 {
                     path: '/inoculation/create',
                     component: () => import(/* webpackChunkName: "createinoculation" */ '../components/page/inoculation/Creation.vue'),
-                    meta: { title: '新建' }
+                    meta: { title: '接种信息-新建' }
                 },
                 {
                     path: '/inoculation/detail',
                     component: () => import(/* webpackChunkName: "inoculationdetail" */ '../components/page/inoculation/Detail.vue'),
-                    meta: { title: '详情' }
+                    meta: { title: '接种信息-详情' }
                 },
                 {
                     path: '/vaccine/create',
                     component: () => import(/* webpackChunkName: "createvaccine" */ '../components/page/vaccine/Creation.vue'),
-                    meta: { title: '新建' }
+                    meta: { title: '疫苗-新建' }
                 },
                 {
                     path: '/vaccine/detail',
                     component: () => import(/* webpackChunkName: "vaccinedetail" */ '../components/page/vaccine/Detail.vue'),
-                    meta: { title: '详情' }
+                    meta: { title: '疫苗-详情' }
                 },
                 {
                     path: '/user/create',
                     component: () => import(/* webpackChunkName: "createuser" */ '../components/page/user/Creation.vue'),
-                    meta: { title: '新建' }
+                    meta: { title: '用户-新建' }
                 },
                 {
                     path: '/user/detail',
                     component: () => import(/* webpackChunkName: "createadetail" */ '../components/page/user/Detail.vue'),
-                    meta: { title: '详情' }
+                    meta: { title: '用户-详情' }
                 },
                 {
                     path: '/tabs',

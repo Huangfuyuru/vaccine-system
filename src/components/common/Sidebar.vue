@@ -58,7 +58,7 @@ export default {
             items: [
                 {
                     icon: 'el-icon-lx-home',
-                    index: 'dashboard',
+                    index: '/dashboard',
                     title: '系统首页'
                 },
                 {
@@ -106,12 +106,6 @@ export default {
                         }
                     ]
                 },
-                
-                // {
-                //     icon: 'el-icon-pie-chart',
-                //     index: 'charts',
-                //     title: '图表'
-                // },
                 {
                     icon: 'el-icon-lx-profile',
                     index: 'user',
@@ -143,7 +137,7 @@ export default {
         });
         const type = Number(localStorage.getItem('ms_type'));
         const users = JSON.parse(localStorage.getItem('ms_users'));
-        if(type !== 0){
+        if(type !== 1){
             console.log('不是管理员')
             this.items.pop();
         }

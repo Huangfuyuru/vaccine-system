@@ -24,7 +24,11 @@
                 <el-table-column prop="childsname" label="接种人"></el-table-column>
                 <el-table-column prop="vaccinesname" label="接种疫苗"></el-table-column>
                 <el-table-column prop="ordinal" label="针剂数"></el-table-column>
-                <el-table-column prop="inoculatedate" label="接种日期"></el-table-column>
+                <el-table-column prop="inoculatedate" label="接种日期">
+                    <template slot-scope="{row}">
+                        {{row.inoculatedate && row.inoculatedate.split('T')[0]}}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="reaction" label="反应"></el-table-column>
                 <el-table-column label="疫苗详情">
                     <template slot-scope="{row}">

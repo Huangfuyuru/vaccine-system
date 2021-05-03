@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { postRegisterCode } from '../../../api/index';
+import { postRegisterCode,postRegister } from '../../../api/index';
 export default {
     name: 'creation',
     data:function(){
@@ -119,7 +119,7 @@ export default {
     },
     methods: {
         async onSubmit() {
-            if(!this.formData.name){
+            this.$refs.form.validate(async params=>{
                 const info = await postRegister({...this.form});
                 if(!info.code){
                     this.$message.success('提交成功！');
@@ -127,9 +127,8 @@ export default {
                 }else{
                     this.$message.success(info.msg);
                 }
-            }else{
-
-            }
+            })
+            
         },
         async sendCode(){
             let info = await postRegisterCode({account:this.form.account});

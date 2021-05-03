@@ -19,12 +19,15 @@
                 ref="multipleTable"
                 header-cell-class-name="table-header"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
                 <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
                 <el-table-column prop="name" label="用户名"></el-table-column>
                 <el-table-column prop="account" label="邮箱号"></el-table-column>
-                <el-table-column prop="password" label="密码"></el-table-column>
-                <el-table-column prop="role" label="用户角色"></el-table-column>
+                <el-table-column prop="pass" label="密码"></el-table-column>
+                <el-table-column prop="type" label="用户角色">
+                    <template slot-scope="scope">
+                        <span>{{Number(scope.row.type) ? '管理员':'接种员'}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="tel" label="联系电话"></el-table-column>
                 <el-table-column prop="unit" label="所属单位"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
@@ -163,6 +166,7 @@ export default {
         },
         handleEdit(index, row) {
             this.form = cloneDeep(row);
+            this.form.type = Number(this.form.type);
             this.editVisible = true;
         },
         saveEdit() {
