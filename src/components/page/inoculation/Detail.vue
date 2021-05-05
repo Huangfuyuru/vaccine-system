@@ -10,7 +10,7 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.childsname" placeholder="接种人姓名" class="handle-input mr10"></el-input>
+                <el-input v-model="query.childsname" placeholder="接种人姓名" class="handle-input mr10" clearable></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="getData">搜索</el-button>
             </div>
             <el-table
@@ -101,7 +101,6 @@ export default {
             handler(value){
                 if(value.path === '/inoculation/detail'){
                     this.query.childsname=value.query.childsname || '';
-                    console.log(this.query)
                     this.getData();
                 }
             }

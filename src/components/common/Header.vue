@@ -8,13 +8,11 @@
         <div class="logo">疫苗接种管理系统</div>
         <div class="header-right">
             <div class="header-user-con">
-                <!-- 全屏显示 -->
                 <div class="btn-fullscreen" @click="handleFullScreen">
                     <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
                         <i class="el-icon-rank"></i>
                     </el-tooltip>
                 </div>
-                <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
                         {{username}}
@@ -49,7 +47,6 @@ export default {
         }
     },
     methods: {
-        // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
                 localStorage.removeItem('ms_users');
@@ -57,12 +54,10 @@ export default {
                 this.$router.push('/login');
             }
         },
-        // 侧边栏折叠
         collapseChage() {
             this.collapse = !this.collapse;
             bus.$emit('collapse', this.collapse);
         },
-        // 全屏事件
         handleFullScreen() {
             let element = document.documentElement;
             if (this.fullscreen) {

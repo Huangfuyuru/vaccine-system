@@ -189,7 +189,8 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    this.deleteVaccinesData({id:row.id,outdate:new Date()})
+                    this.deleteVaccinesData({id:row.id,outdate:new Date()});
+                    this.getVaccineData()
                 })
                 .catch(() => {});
         },
